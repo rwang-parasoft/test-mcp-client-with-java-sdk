@@ -179,6 +179,7 @@ public class McpAsyncServer {
 	private Map<String, McpNotificationHandler> prepareNotificationHandlers(McpServerFeatures.Async features) {
 		Map<String, McpNotificationHandler> notificationHandlers = new HashMap<>();
 
+		// stateful 测试点：将 Mono.empty() 修改为 Mono.error(new RuntimeException("Exception on purpose")) 就可以测试 当请求“POST - notifications/initialized”失败时 的情况
 		notificationHandlers.put(McpSchema.METHOD_NOTIFICATION_INITIALIZED, (exchange, params) -> Mono.empty());
 
 		List<BiFunction<McpAsyncServerExchange, List<McpSchema.Root>, Mono<Void>>> rootsChangeConsumers = features

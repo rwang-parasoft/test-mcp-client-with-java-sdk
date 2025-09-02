@@ -92,10 +92,12 @@ public class McpStatelessAsyncServer {
 		// Ping MUST respond with an empty data, but not NULL response.
 		requestHandlers.put(McpSchema.METHOD_PING, (ctx, params) -> Mono.just(Map.of()));
 
+		// stateless 测试点：将下一行注释掉就可以测试 当请求“POST - initialize”失败时的情况
 		requestHandlers.put(McpSchema.METHOD_INITIALIZE, asyncInitializeRequestHandler());
 
 		// Add tools API handlers if the tool capability is enabled
 		if (this.serverCapabilities.tools() != null) {
+			// stateless 测试点：将下一行注释掉就可以测试 当请求“POST - 常规请求（例如tools/list,tools/call）”失败时 的情况
 			requestHandlers.put(McpSchema.METHOD_TOOLS_LIST, toolsListRequestHandler());
 			requestHandlers.put(McpSchema.METHOD_TOOLS_CALL, toolsCallRequestHandler());
 		}

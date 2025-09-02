@@ -166,6 +166,7 @@ public class HttpServletStatelessServerTransport extends HttpServlet implements 
 			}
 			else if (message instanceof McpSchema.JSONRPCNotification jsonrpcNotification) {
 				try {
+					// stateless 测试点：将170-173替换为 throw new RuntimeException("Exception on purpose"); 以测试 当请求“POST - notifications/initialized”失败时 的情况
 					this.mcpHandler.handleNotification(transportContext, jsonrpcNotification)
 						.contextWrite(ctx -> ctx.put(McpTransportContext.KEY, transportContext))
 						.block();

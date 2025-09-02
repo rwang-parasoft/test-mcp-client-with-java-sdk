@@ -259,6 +259,7 @@ public class HttpServletStreamableServerTransportProvider extends HttpServlet
 			badRequestErrors.add("Session ID required in mcp-session-id header");
 		}
 
+		// stateful 测试点：将感叹号去掉就可以测试 当请求GET如果返回了非200 的情况。通过wireshark装包可得知有GET请求，并返回405。该行为不会影响正常测试结果。
 		if (!badRequestErrors.isEmpty()) {
 			String combinedMessage = String.join("; ", badRequestErrors);
 			this.responseError(response, HttpServletResponse.SC_BAD_REQUEST, new McpError(combinedMessage));
@@ -398,6 +399,7 @@ public class HttpServletStreamableServerTransportProvider extends HttpServlet
 			// Handle initialization request
 			if (message instanceof McpSchema.JSONRPCRequest jsonrpcRequest
 					&& jsonrpcRequest.method().equals(McpSchema.METHOD_INITIALIZE)) {
+				// stateful 测试点：将感叹号去掉就可以测试 当请求“POST - initialize”失败时 的情况
 				if (!badRequestErrors.isEmpty()) {
 					String combinedMessage = String.join("; ", badRequestErrors);
 					this.responseError(response, HttpServletResponse.SC_BAD_REQUEST, new McpError(combinedMessage));
@@ -468,6 +470,9 @@ public class HttpServletStreamableServerTransportProvider extends HttpServlet
 				response.setStatus(HttpServletResponse.SC_ACCEPTED);
 			}
 			else if (message instanceof McpSchema.JSONRPCRequest jsonrpcRequest) {
+				// stateful 测试点：将474-475解注，然后将477-497注释掉，就可以测试 当请求“POST - 常规请求（例如tools/list,tools/call）”失败时 的情况
+				/*this.responseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						new McpError("Unknown message type"));*/
 				// For streaming responses, we need to return SSE
 				response.setContentType(TEXT_EVENT_STREAM);
 				response.setCharacterEncoding(UTF_8);
@@ -536,6 +541,7 @@ public class HttpServletStreamableServerTransportProvider extends HttpServlet
 			return;
 		}
 
+		// stateful 测试点：将感叹号去掉就可以测试 当请求DELETE如果返回了非200 的情况。通过wireshark装包可得知有DELETE请求，并返回405。该行为不会影响正常测试结果。
 		if (this.disallowDelete) {
 			response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			return;
